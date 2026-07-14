@@ -1,0 +1,79 @@
+<?php
+
+namespace App\Exports;
+
+use App\Models\Attendance;
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use Illuminate\Support\Facades\DB;
+
+
+class AttendanceExport implements FromQuery, WithHeadings, WithMapping
+{
+    protected $request;
+
+    public function __construct($request)
+    {
+        $this->request = $request;
+    }
+
+    public function query()
+    {
+return DB::table('attendances as a')
+        ->leftJoin(DB::raw("
+            (SELECT sn, user_id, MAX(name) as name
+             FROM device_users
+             GROUP BY sn, user_id) as du
+        "), function ($join) {
+            $join->on('a.sn', '=', 'du.sn')
+                 ->on('a.employee_id', '=', 'du.user_id');
+        })
+        ->selectRaw("
+            a.id,
+            a.sn,
+            a.employee_id,
+            COALESCE(du.name, '') as employee_name,
+            a.timestamp,
+            CASE
+                WHEN a.status1 = 1 THEN 'Check Out'
+                ELSE 'Check In'
+            END as punch_type
+        ")
+        ->when($this->request->sn, fn($q) => $q->where('a.sn', 'like', '%' . $this->request->sn . '%'))
+        ->when($this->request->employee_id, fn($q) => $q->where('a.employee_id', $this->request->employee_id))
+        ->when($this->request->from, fn($q) => $q->whereDate('a.timestamp', '>=', $this->request->from))
+        ->when($this->request->to, fn($q) => $q->whereDate('a.timestamp', '<=', $this->request->to))
+        ->orderBy('a.timestamp', 'desc')
+        ->get();
+    }
+
+
+public function headings(): array
+{
+    return [
+        'ID',
+        'SN',
+        'Employee ID',
+        'Employee Name',
+        'Timestamp',
+        'Type',
+    ];
+}
+
+
+    public function map($attendance): array
+    {
+        return [
+            $attendance->id,
+            $attendance->sn,
+            $attendance->employee_id,
+            $attendance->timestamp,
+            $attendance->status1,
+            $attendance->status2,
+            $attendance->status3,
+            $attendance->status4,
+            $attendance->status5,
+        ];
+    }
+}
