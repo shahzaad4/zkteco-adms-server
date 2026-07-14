@@ -3,8 +3,30 @@
 A Laravel-based Attendance Device Management System (ADMS) for receiving, managing, and monitoring ZKTeco biometric devices using the iClock (ADMS) protocol.
 
 The system provides centralized attendance collection, employee synchronization, device monitoring, reporting, and administrative tools for organizations operating one or multiple biometric devices.
-
 ---
+
+## Acknowledgements
+
+This project is based on the excellent work by **Saiful Coder**:
+
+https://github.com/saifulcoder/adms-server-ZKTeco
+
+The original project provided the foundation for the ADMS server implementation.
+
+This repository extends and customizes the original project with numerous improvements, including:
+
+- Redesigned administrative interface
+- Employee name mapping
+- Check-In / Check-Out event classification
+- Improved attendance visualization
+- Enhanced Excel exports
+- Device command management
+- Improved device synchronization
+- Bug fixes and stability improvements
+- General codebase enhancements
+
+Credit goes to the original author for creating the foundation that made these improvements possible.
+
 
 ## Features
 
