@@ -1,59 +1,58 @@
 # ZKTeco ADMS Server
 
-A Laravel-based Attendance Device Management System (ADMS) for managing ZKTeco biometric devices over the iClock protocol.
+A Laravel-based Attendance Device Management System (ADMS) for receiving, managing, and monitoring ZKTeco biometric devices using the iClock (ADMS) protocol.
 
-The application provides centralized device communication, attendance synchronization, employee management, reporting, and administrative tools for organizations operating multiple biometric devices.
-
----
-
-## Overview
-
-This project acts as an ADMS server between ZKTeco biometric devices and a centralized database.
-
-It supports both real-time attendance synchronization and on-demand data retrieval through device commands while providing a web interface for administrators to monitor devices, manage employee data, and generate attendance reports.
+The system provides centralized attendance collection, employee synchronization, device monitoring, reporting, and administrative tools for organizations operating one or multiple biometric devices.
 
 ---
 
-## Core Features
+## Features
 
 - Real-time attendance synchronization
-- Attendance log import through device commands
 - Employee (device user) synchronization
 - Device status monitoring
-- Attendance reporting
-- Check-In / Check-Out visualization
+- Attendance log viewer
 - Employee name mapping
+- Check-In / Check-Out event detection
+- Attendance reporting
 - Excel export
-- Device log viewer
-- Fingerprint log management
-- Multi-device support
+- Device communication logs
+- Fingerprint log viewer
 - Search and filtering
+- Multi-device support
+- Command queue for requesting attendance and user data from devices
 
 ---
 
 ## Screenshots
 
-### Dashboard
+### Devices Overview
 
-![Dashboard](screenshots/dashboard.png)
+Displays all connected biometric devices and their latest online status.
 
-### Devices
+![Devices Overview](screenshots/devices-overview.png)
 
-![Devices](screenshots/devices.png)
+---
 
-### Attendance
+### Attendance Logs
 
-![Attendance](screenshots/attendance.png)
+Browse every attendance event received from devices with employee information, timestamps, and event type.
 
-### Attendance Report
+![Attendance Logs](screenshots/attendance-logs.png)
 
-![Attendance Report](screenshots/attendance-report.png)
+---
 
 ### Device Users
 
+Search and manage employees synchronized from connected biometric devices.
+
 ![Device Users](screenshots/device-users.png)
 
-### Device Logs
+---
+
+### Device Communication Logs
+
+Inspect requests and payloads exchanged between devices and the ADMS server for monitoring and troubleshooting.
 
 ![Device Logs](screenshots/device-logs.png)
 
@@ -62,64 +61,163 @@ It supports both real-time attendance synchronization and on-demand data retriev
 ## Technology Stack
 
 | Component | Technology |
-|-----------|------------|
-| Framework | Laravel |
-| Language | PHP 8 |
+|------------|------------|
+| Backend | Laravel 12 |
+| Language | PHP 8.x |
 | Database | MySQL / MariaDB |
-| Frontend | Blade, Bootstrap 5 |
-| Export | Laravel Excel |
-| Device Protocol | ZKTeco iClock |
+| Frontend | Blade, Bootstrap |
+| Excel Export | Laravel Excel |
+| Web Server | Nginx |
+| Device Protocol | ZKTeco iClock (ADMS) |
 
 ---
 
-## Installation
+# Installation
 
-Clone the repository.
+## Requirements
+
+- PHP 8.2+
+- Composer
+- MySQL or MariaDB
+- Nginx (recommended)
+- Git
+
+---
+
+## 1. Clone the Repository
 
 ```bash
 git clone https://github.com/shahzaad4/zkteco-adms-server.git
+cd zkteco-adms-server
 ```
 
-Install dependencies.
+---
+
+## 2. Install Dependencies
 
 ```bash
-composer install
+composer install --no-dev --optimize-autoloader
 ```
 
-Create the environment file.
+---
+
+## 3. Create Environment File
 
 ```bash
 cp .env.example .env
 ```
 
-Generate the application key.
+---
+
+## 4. Generate Application Key
 
 ```bash
 php artisan key:generate
 ```
 
-Configure your database inside `.env`.
+---
+
+## 5. Configure Environment
+
+Update the `.env` file with your database settings.
 
 ```env
+APP_NAME="ADMS Server"
+APP_ENV=production
+APP_DEBUG=false
+
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=adms
-DB_USERNAME=root
-DB_PASSWORD=
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
 ```
 
-Run the migrations.
+---
+
+## 6. Run Database Migrations
 
 ```bash
 php artisan migrate
 ```
 
-Start the development server.
+---
+
+## 7. Configure Permissions
 
 ```bash
-php artisan serve
+sudo chown -R www-data:www-data storage bootstrap/cache
+
+sudo chmod -R 775 storage bootstrap/cache
 ```
+
+---
+
+## 8. Optimize Laravel
+
+```bash
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+---
+
+## 9. Configure Nginx
+
+Example server block:
+
+```nginx
+server {
+
+    listen 80;
+
+    server_name your-domain.com;
+
+    root /var/www/adms/public;
+
+    index index.php;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
+```
+
+Reload Nginx:
+
+```bash
+sudo nginx -t
+
+sudo systemctl reload nginx
+```
+
+---
+
+## 10. Configure ZKTeco Devices
+
+Point every biometric device to:
+
+```
+http://YOUR_SERVER_IP/iclock
+```
+
+Enable:
+
+- ADMS Mode
+- Push Protocol (iClock)
+- Correct Server IP
+- Correct Port (80 or 443)
 
 ---
 
@@ -138,30 +236,16 @@ storage/
 
 ---
 
-## Screens Included
-
-- Dashboard
-- Device Management
-- Attendance Logs
-- Attendance Report
-- Device Users
-- Device Logs
-
----
-
 ## Future Improvements
 
-- Role-based authentication
+- Authentication and user roles
 - Department management
 - Shift scheduling
 - Overtime calculation
 - REST API
-- Mobile dashboard
+- Dashboard analytics
 - Docker deployment
-- Odoo integration
+- Multi-tenant support
+- Odoo ERP integration
 
 ---
-
-## License
-
-This project is licensed under the MIT License.
