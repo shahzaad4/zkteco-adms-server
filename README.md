@@ -1,102 +1,167 @@
-# ADMS (Attendance Device Management System)
+# ZKTeco ADMS Server
 
-ADMS is a comprehensive Attendance Device Management System designed to handle biometric and access control data from various devices. This system is built using Laravel, a PHP framework, provides functionalities to store, manage user and fingerprint data.
+A Laravel-based Attendance Device Management System (ADMS) for managing ZKTeco biometric devices over the iClock protocol.
 
-## Features
+The application provides centralized device communication, attendance synchronization, employee management, reporting, and administrative tools for organizations operating multiple biometric devices.
 
-- Fingerprint data storage
+---
+
+## Overview
+
+This project acts as an ADMS server between ZKTeco biometric devices and a centralized database.
+
+It supports both real-time attendance synchronization and on-demand data retrieval through device commands while providing a web interface for administrators to monitor devices, manage employee data, and generate attendance reports.
+
+---
+
+## Core Features
+
+- Real-time attendance synchronization
+- Attendance log import through device commands
+- Employee (device user) synchronization
 - Device status monitoring
+- Attendance reporting
+- Check-In / Check-Out visualization
+- Employee name mapping
+- Excel export
+- Device log viewer
+- Fingerprint log management
+- Multi-device support
+- Search and filtering
+
+---
 
 ## Screenshots
-Device Connected
-![App Screenshot](https://github.com/saifulcoder/adms-server-ZKTeco/blob/main/Screenshot_7.png)
-Attendance Recorded
-![App Screenshot](https://github.com/saifulcoder/adms-server-ZKTeco/blob/main/Screenshot_8.png)
-Device Log
-![App Screenshot](https://github.com/saifulcoder/adms-server-ZKTeco/blob/main/Screenshot_9.png)
-Attendence Log
-![App Screenshot](https://github.com/saifulcoder/adms-server-ZKTeco/blob/main/Screenshot_10.png)
+
+### Dashboard
+
+![Dashboard](screenshots/dashboard.png)
+
+### Devices
+
+![Devices](screenshots/devices.png)
+
+### Attendance
+
+![Attendance](screenshots/attendance.png)
+
+### Attendance Report
+
+![Attendance Report](screenshots/attendance-report.png)
+
+### Device Users
+
+![Device Users](screenshots/device-users.png)
+
+### Device Logs
+
+![Device Logs](screenshots/device-logs.png)
+
+---
+
+## Technology Stack
+
+| Component | Technology |
+|-----------|------------|
+| Framework | Laravel |
+| Language | PHP 8 |
+| Database | MySQL / MariaDB |
+| Frontend | Blade, Bootstrap 5 |
+| Export | Laravel Excel |
+| Device Protocol | ZKTeco iClock |
+
+---
 
 ## Installation
 
-### Prerequisites
+Clone the repository.
 
-Before you begin, ensure you have the following installed on your system:
+```bash
+git clone https://github.com/shahzaad4/zkteco-adms-server.git
+```
 
-- PHP >= 8.0
-- Composer
-- MySQL or any other supported database
-- Web server (Apache, Nginx, etc.)
+Install dependencies.
 
-### Steps
+```bash
+composer install
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/saifulcoder/adms-server-ZKTeco.git adms-server
-   cd adms-server
-   ```
+Create the environment file.
 
-2. **Install dependencies**
-   ```bash
-   composer install
-   ```
+```bash
+cp .env.example .env
+```
 
-3. **Copy the `.env` file**
-   ```bash
-   cp .env.example .env
-   ```
+Generate the application key.
 
-4. **Generate application key**
-   ```bash
-   php artisan key:generate
-   ```
+```bash
+php artisan key:generate
+```
 
-5. **Configure the `.env` file**
-   Open the `.env` file and set your database credentials and other environment variables:
-   ```env
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=adms
-   DB_USERNAME=root
-   DB_PASSWORD=
-   ```
+Configure your database inside `.env`.
 
-6. **Run the migrations**
-   ```bash
-   php artisan migrate
-   ```
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=adms
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-7. **Serve the application**
-   ```bash
-   php artisan serve
-   ```
+Run the migrations.
 
-### Monitoring Device Status
+```bash
+php artisan migrate
+```
 
-You can monitor the status of devices by querying the `devices` table where the `online` field indicates the last time the device was online.
+Start the development server.
 
-## Postman Collection
+```bash
+php artisan serve
+```
 
-For testing and interacting with the API endpoints, you can use the provided Postman collection:
-[Postman Collection](https://github.com/saifulcoder/adms-server-ZKTeco/blob/main/ADMS server ZKTeco.postman_collection.json)
+---
 
+## Project Structure
 
-## Authors
+```
+app/
+bootstrap/
+config/
+database/
+public/
+resources/
+routes/
+storage/
+```
 
-- [@saifulcoder](https://github.com/saifulcoder)
+---
 
-## For Improvement and project
+## Screens Included
 
-contact us saiful.coder@gmail.com
+- Dashboard
+- Device Management
+- Attendance Logs
+- Attendance Report
+- Device Users
+- Device Logs
 
-## Contributing
+---
 
-This project helps you and you want to help keep it going? Buy me a coffee:
-<br> <a href="https://www.buymeacoffee.com/saifulcoder" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 61px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a><br>
-or via <br>
-<a href="https://saweria.co/saifulcoder">https://saweria.co/saifulcoder</a>
+## Future Improvements
+
+- Role-based authentication
+- Department management
+- Shift scheduling
+- Overtime calculation
+- REST API
+- Mobile dashboard
+- Docker deployment
+- Odoo integration
+
+---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
